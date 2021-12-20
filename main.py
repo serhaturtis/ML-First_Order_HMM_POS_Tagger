@@ -49,7 +49,7 @@ def main():
 
     write_pairs_to_file(model.get_transition_probabilities(), output_files_path, 'TransitionProbs.txt')
 
-    write_pairs_to_file(model.get_vocabulary(), output_files_path, ' Vocabulary.txt')
+    write_pairs_to_file(model.get_vocabulary(), output_files_path, 'Vocabulary.txt')
 
     write_pairs_to_file(model.get_emission_probabilities(), output_files_path, 'EmissionProbs.txt')
 
@@ -65,7 +65,7 @@ def main():
                'Correct predictions count in ca41 corpus': ca41_results['correct_predictions_count'],
                'ca41 results': ca41_results['viterbi_result']}
 
-    write_pairs_to_file(results, output_files_path, 'Sonuc.txt')
+    write_pairs_to_file(results, output_files_path, 'Results.txt')
 
     prediction_result = model.predict(untagged_data)
     print(prediction_result)
