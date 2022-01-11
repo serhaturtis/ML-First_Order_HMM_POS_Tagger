@@ -34,6 +34,7 @@ class FirstOrderHMM:
         self.tag_pairs = dict(sorted(self.tag_pairs.items(), key=lambda x: x[1], reverse=True))
         self.words = dict(sorted(self.words.items(), key=lambda x: x[1], reverse=True))
         self.tags = dict(sorted(self.tags.items(), key=lambda x: x[1], reverse=True))
+        
         return
 
     def clean_whitespace(self, corpus):
@@ -205,14 +206,15 @@ class FirstOrderHMM:
         result = []
         for t in words:
             dic = {}
-            for key, value in self.word_tag_pairs.items():  # key = (word,tag)
+            for key, value in self.word_tag_pairs.items():
                 if key[0] == t:
-                    # P(w|t) = C(t,w) / C(t)            # Observation probability
                     dic[key[1]] = value / self.tags.get(key[1])
+                    
             if dic:
                 best = max(dic, key=dic.get)
                 print(str(t) + "/" + str(best))
                 result.append(str(t) + "/" + str(best))
+                
         return result
 
     def remove_tags_from_corpus(self, corpus):
@@ -312,16 +314,14 @@ class FirstOrderHMM:
         return result
 
     def viterbi(self, words):
-        # It stores every tag probability for each observation {(word,tag):probability}
         observations = []
 
-        # Observations
+        # observations
         for index, token in enumerate(words):
             if index < len(words) - 1:
                 dic = {}
                 for key, value in self.word_tag_pairs.items():
                     if key[0] == token:
-                        # P(w|t) = C(t,w) / C(t)
                         pair = (token, key[1])
                         dic[pair] = value / self.tags.get(key[1])
                 if dic:
@@ -329,7 +329,6 @@ class FirstOrderHMM:
                 else:
                     for key, value in self.word_tag_pairs.items():
                         if key[0] == 'unk':
-                            # P(w|t) = C(t,w) / C(t)
                             pair = (token, key[1])
                             dic[pair] = value / self.tags.get(key[1])
 
@@ -337,17 +336,17 @@ class FirstOrderHMM:
 
         x = observations.pop()
         last = max(x, key=x.get)
-        pos_tags = [last[0] + "/" + last[1]]  # Best tags w.r.t Viterbi algorithm
+        pos_tags = [last[0] + "/" + last[1]]
 
-        # Transitions
+        # transitions
         while observations:
             element = observations.pop()
             dic = {}
             for keyb, valueb in element.items():
                 for key, value in self.tag_pairs.items():
                     if key[1] == keyb[1]:
-                        # P(t2 | t1) = C(t1, t2) / C(t1)        # Emission probability
                         dic[keyb] = (value / self.tags.get(key[0])) * valueb
+                        
             best = max(dic, key=dic.get)
             pos_tags.append(best[0] + "/" + best[1])
 
